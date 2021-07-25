@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/rapidImageSearchFragment"
+    >
+    <fragment
+        android:id="@+id/rapidImageSearchFragment"
+        android:name="com.app.rapidimagesearch.ui.imagesearch.RapidImageSearchFragment"
+        android:label="fragment_image_search"
+        tools:layout="@layout/fragment_rapid_image_search" >
+
+
+    </fragment>
+
+
+</navigation>
