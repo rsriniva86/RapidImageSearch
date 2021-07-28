@@ -2,28 +2,33 @@ package com.app.rapidimagesearch.ui.imagesearch
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import com.app.rapidimagesearch.MainActivityDelegate
 import com.app.rapidimagesearch.R
 import com.app.rapidimagesearch.network.ImageData
-import com.app.rapidimagesearch.ui.components.OnLoadMoreListener
-import com.app.rapidimagesearch.ui.components.RecyclerViewLoadMoreScroll
+import com.app.rapidimagesearch.ui.image.ImageViewModel
+import com.app.rapidimagesearch.ui.web.WebPageViewModel
 import com.app.rapidimagesearch.utilities.initToolbar
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_rapid_image_search.*
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
-class RapidImageSearchFragment : Fragment() {
-    private lateinit var adapter: RapidImageSearchAdapter
-    private lateinit var scrollListener: RecyclerViewLoadMoreScroll
-    private lateinit var mLayoutManager: LinearLayoutManager
+@AndroidEntryPoint
+class RapidImageSearchFragment : Fragment(), RapidImageSearchAdapter.OnSearchImageItemClickListener {
+
     private val viewModel: RapidImageSearchViewModel by viewModels()
     private lateinit var mainActivityDelegate: MainActivityDelegate
+    private val imageAdapter = RapidImageSearchAdapter()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -51,58 +56,76 @@ class RapidImageSearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter= RapidImageSearchAdapter(mutableListOf())
-        adapter.notifyDataSetChanged()
-        rvImages.adapter=adapter
-        setRVLayoutManager()
-        setRVScrollListener()
+        setupViews()
+        imageAdapter.setOnItemClickListener(this)
     }
 
+    override fun onItemClick(imageData: ImageData) {
+        imageData.let {
+            findNavController().navigate(
+                R.id.a_to_b,
+                ImageViewModel.createArguments(imageData)
+            )
+        }
+    }
+
+    override fun onUrlClick(imageData: ImageData) {
+        imageData.let {
+            findNavController().navigate(
+                R.id.a_to_c,
+                WebPageViewModel.createArguments(imageData)
+            )
+        }
+    }
+
+    private fun setupViews() {
+        //rvImages.adapter = imageAdapter
+        val loaderStateAdapter = RapidImageLoadStateAdapter {
+            imageAdapter.retry()
+        }
+        rvImages.adapter = imageAdapter.withLoadStateFooter(footer = loaderStateAdapter)
+        tvSearch.setOnEditorActionListener { textView, actionId, _ ->
+
+            when (actionId) {
+                EditorInfo.IME_ACTION_SEARCH -> {
+                    hideKeyboard(textView)
+                    getImageList(textView.text.toString())
+
+                    true
+                }
+                EditorInfo.IME_ACTION_DONE -> {
+                    getImageList(textView.text.toString())
+                    true
+                }
+                else -> false
+            }
+        }
+
+    }
 
     private fun hideKeyboard(view: View) {
         val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
+    private fun getImageList(input: String) {
 
+        println("getImageList")
+        lifecycleScope.launch {
+            viewModel.getData(input)
+                .collectLatest { pagingData ->
+                    imageAdapter.submitData(pagingData)
+                }
+        }
 
-    private fun setRVLayoutManager() {
-        mLayoutManager = LinearLayoutManager(requireContext())
-        rvImages.layoutManager = mLayoutManager
-        rvImages.setHasFixedSize(true)
-    }
-
-    private  fun setRVScrollListener() {
-        mLayoutManager = LinearLayoutManager(requireContext())
-        scrollListener = RecyclerViewLoadMoreScroll(mLayoutManager as LinearLayoutManager)
-        scrollListener.setOnLoadMoreListener(object : OnLoadMoreListener {
-            override fun onLoadMore() {
-                loadMoreData()
+        lifecycleScope.launch {
+            imageAdapter.loadStateFlow.collectLatest { loadStates ->
+                if(loadStates.refresh is LoadState.Loading){
+                    progressBar?.visibility = View.VISIBLE
+                }else{
+                    progressBar?.visibility = View.GONE
+                }
             }
-        })
-        rvImages.addOnScrollListener(scrollListener)
+        }
     }
-    private fun loadMoreData() {
-        //Add the Loading View
-        adapter.addLoadingView()
-
-//        Handler().postDelayed({
-//            for (i in start..end) {
-//                //Get data and add them to loadMoreItemsCells ArrayList
-//                loadMoreItemsCells.add("Item $i")
-//            }
-//            //Remove the Loading View
-//            adapter.removeLoadingView()
-//            //We adding the data to our main ArrayList
-//            adapter.addData(loadMoreItemsCells)
-//            //Change the boolean isLoading to false
-//            scrollListener.setLoaded()
-//            //Update the recyclerView in the main thread
-//            items_linear_rv.post {
-//                adapterLinear.notifyDataSetChanged()
-//            }
-//        }, 3000)
-
-    }
-
 }

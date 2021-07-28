@@ -1,5 +1,6 @@
 package com.app.rapidimagesearch.db
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -10,15 +11,13 @@ import com.app.rapidimagesearch.network.ImageData
 interface ImageDataDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun saveAllImageData(imageDataList: List<ImageData>)
+    suspend fun save(imageDataList: List<ImageData>)
 
-    @Query("SELECT * FROM image_data WHERE `query` LIKE :q")
-    fun selectAll(q: String?): List<ImageData>
+    @Query("SELECT * FROM image_data WHERE `query` LIKE :input")
+    fun select(input: String?): PagingSource<Int, ImageData>
 
     @Query("DELETE FROM image_data WHERE `query` = :q")
-    suspend fun deleteImageDataByQuery(q: String)
+    suspend fun delete(q: String)
 
-    @Query("SELECT * FROM image_data")
-    fun selectAllData(): List<ImageData>
 
 }

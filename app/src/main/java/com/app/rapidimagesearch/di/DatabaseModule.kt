@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.app.rapidimagesearch.db.DatabaseService
 import com.app.rapidimagesearch.db.ImageDataDao
+import com.app.rapidimagesearch.db.ImageDataIndexDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,6 +15,12 @@ import javax.inject.Singleton
 @InstallIn(ApplicationComponent::class)
 @Module
 object DatabaseModule {
+
+    @Singleton
+    @Provides
+    fun provideImageDataIndexDao(databaseService: DatabaseService): ImageDataIndexDao {
+        return databaseService.imageIndexDao()
+    }
 
     @Singleton
     @Provides

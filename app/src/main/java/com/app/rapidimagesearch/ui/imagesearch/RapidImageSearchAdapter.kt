@@ -1,75 +1,76 @@
 package com.app.rapidimagesearch.ui.imagesearch
 
-import android.content.Context
-import android.os.Handler
-import android.os.Looper
+import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.app.rapidimagesearch.R
 import com.app.rapidimagesearch.network.ImageData
-import com.app.rapidimagesearch.ui.components.RecyclerViewLoadMoreScroll.Companion.VIEW_TYPE_ITEM
-import com.app.rapidimagesearch.ui.components.RecyclerViewLoadMoreScroll.Companion.VIEW_TYPE_LOADING
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import kotlinx.android.synthetic.main.item_image.view.*
 
-class RapidImageSearchAdapter(imageDataListParam: MutableList<ImageData?>) : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+class RapidImageSearchAdapter() :
+PagingDataAdapter<ImageData, RapidImageSearchAdapter.ImageDataViewHolder>(DiffUtilCallBack()) {
+    private var onSearchImageSearchImageItemClickListener: OnSearchImageItemClickListener? = null
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageDataViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_image, parent, false)
+        return ImageDataViewHolder(view)
+    }
 
-    private var imageDataList = imageDataListParam
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val context:Context = parent.context
-
-        return if (viewType == VIEW_TYPE_ITEM) {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_image, parent, false)
-            ImageViewHolder(view)
-        } else {
-            val view = LayoutInflater.from(context).inflate(R.layout.item_progressbar, parent, false)
-            LoadingViewHolder(view)
+    override fun onBindViewHolder(holder: ImageDataViewHolder, position: Int) {
+        getItem(position)?.let { holder.bindImageData(it) }
+        val item = getItem(position)
+        holder.itemView.ivCover.setOnClickListener {
+            item?.let { it1 -> onSearchImageSearchImageItemClickListener?.onItemClick(it1) }
         }
-    }
-
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val imageData: ImageData? = imageDataList.get(position)
-        
-    }
-
-    override fun getItemCount(): Int {
-        return imageDataList.size
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        return if (imageDataList[position] == null) {
-            VIEW_TYPE_LOADING
-        } else {
-            VIEW_TYPE_ITEM
+        holder.itemView.tvWebPageUrl.setOnClickListener {
+            item?.let { it1 -> onSearchImageSearchImageItemClickListener?.onUrlClick(it1) }
         }
+
+
     }
 
-    fun addLoadingView() {
-        //Add loading item
-        Handler(Looper.getMainLooper()).post {
-            imageDataList.add(null)
-            notifyItemInserted(imageDataList.size - 1)
-        }
+    fun setOnItemClickListener(listenerSearchImage: OnSearchImageItemClickListener) {
+        onSearchImageSearchImageItemClickListener = listenerSearchImage
     }
 
-    fun removeLoadingView() {
-        //Remove loading item
-        if (imageDataList.size != 0) {
-            imageDataList.removeAt(imageDataList.size - 1)
-            notifyItemRemoved(imageDataList.size)
-        }
-    }
-
-    class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ImageDataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val ivImageCover: ImageView = itemView.ivCover
         private val tvTitle: TextView = itemView.tvTitle
         private val tvWebPageUrl: TextView = itemView.tvWebPageUrl
+
+        fun bindImageData(imageData: ImageData) {
+            with(imageData) {
+                Glide.with(itemView.context).load(thumbnail)
+                        .transform(CenterCrop(), RoundedCorners(25))
+                        .into(ivImageCover)
+                tvTitle.text = title
+                tvWebPageUrl.text = webPageUrl
+                tvWebPageUrl.paintFlags = Paint.UNDERLINE_TEXT_FLAG
+            }
+        }
     }
 
-    class LoadingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    interface OnSearchImageItemClickListener {
+        fun onItemClick(imageData: ImageData)
+        fun onUrlClick(imageData: ImageData)
+    }
+    class DiffUtilCallBack : DiffUtil.ItemCallback<ImageData>() {
+        override fun areItemsTheSame(oldItem: ImageData, newItem: ImageData): Boolean {
+            return oldItem.url == newItem.url
+        }
 
+        override fun areContentsTheSame(oldItem: ImageData, newItem: ImageData): Boolean {
+            return oldItem.url == newItem.url
+                    && oldItem.title == newItem.title
+                    && oldItem.webPageUrl == newItem.webPageUrl
+        }
+    }
 }

@@ -8,11 +8,12 @@ import javax.inject.Singleton
 
 @Singleton
 @Database(
-    entities = [ImageData::class],
+    entities = [ImageData::class, ImageDataIndex::class],
     exportSchema = false,
     version = 1
 )
 @TypeConverters(DataConverter::class)
 abstract class DatabaseService : RoomDatabase() {
     abstract fun imageDao(): ImageDataDao
+    abstract fun imageIndexDao():ImageDataIndexDao
 }
