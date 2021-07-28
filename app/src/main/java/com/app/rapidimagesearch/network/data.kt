@@ -5,6 +5,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class RapidImageSearchResponse(
     @SerializedName("_type")
@@ -57,7 +58,7 @@ data class ImageData(
     val webPageUrl: String? = null,
     @ColumnInfo(name = "query")
     val query: String? = null
-)
+):Serializable
 
 data class Provider(
     @ColumnInfo(name = "name")

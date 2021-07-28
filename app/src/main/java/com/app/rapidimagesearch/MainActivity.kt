@@ -57,3 +57,9 @@ class MainActivity : AppCompatActivity(), MainActivityDelegate {
         drawerLayout.isEnabled = enable
     }
 }
+
+interface MainActivityDelegate {
+    fun setupNavDrawer(toolbar: androidx.appcompat.widget.Toolbar)
+
+    fun enableNavDrawer(enable: Boolean)
+}
