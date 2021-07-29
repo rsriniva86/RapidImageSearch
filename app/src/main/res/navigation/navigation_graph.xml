@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/a">
+    <fragment
+        android:id="@+id/a"
+        android:name="com.app.rapidimagesearch.ui.imagesearch.RapidImageSearchFragment"
+        android:label="searchFrag"
+        tools:layout="@layout/fragment_rapid_image_search">
+        <action
+            android:id="@+id/a_to_b"
+            app:destination="@id/b" />
+        <action
+            android:id="@+id/a_to_c"
+            app:destination="@id/c" />
+
+    </fragment>
+
+
+    <dialog
+        android:id="@+id/b"
+        android:name="com.app.rapidimagesearch.ui.image.ImageFragment"
+        android:label="ImageFrag" />
+    <fragment
+        android:id="@+id/c"
+        android:name="com.app.rapidimagesearch.ui.web.WebPageFragment"
+        android:label="WebPageFrag" />
+
+
+</navigation>
