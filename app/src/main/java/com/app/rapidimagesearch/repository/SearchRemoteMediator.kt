@@ -25,6 +25,7 @@ class SearchRemoteMediator @Inject constructor(
         loadType: LoadType,
         state: PagingState<Int, ImageData>
     ): MediatorResult {
+        println("load")
         return try {
             val loadKey = when (loadType) {
                 LoadType.REFRESH -> null
@@ -35,10 +36,9 @@ class SearchRemoteMediator @Inject constructor(
                     getCurrentKey(input)
                 }
             }
-            val pageNumber = loadKey?.pageNumber?.plus(1)
-                ?: 1 //page number is 1 0r latest page//page number is 1 0r latest page
+            val pageNumber = loadKey?.pageNumber?.plus(1) ?: 1 //page number is 1 0r latest page//page number is 1 0r latest page
 
-            val networkResponse = networkService.search(
+            val networkData = networkService.search(
                 Constants.API_KEY_VALUE,
                 Constants.API_HOST_VALUE,
                 input,
@@ -46,8 +46,13 @@ class SearchRemoteMediator @Inject constructor(
                 Constants.DEFAULT_PAGE_SIZE,
                 true
             )
-            val isEndOfList: Boolean = networkResponse.imageList.isEmpty()
-            val imageDataList = networkResponse.imageList
+            val isListEmpty: Boolean = networkData.imageList.isEmpty()
+            val imageDataList = networkData.imageList.map { imageData: ImageData ->
+                imageData.input =input
+                imageData
+            }
+            println("imageDataList$imageDataList")
+
 
             databaseService.withTransaction {
                 if (loadType == LoadType.REFRESH) {
@@ -57,6 +62,7 @@ class SearchRemoteMediator @Inject constructor(
             }
 
             if (imageDataList.isNotEmpty()) {
+                println("image data list is not empty")
                 databaseService.withTransaction {
                     databaseService.imageIndexDao()
                         .insertOrReplace(
@@ -65,15 +71,16 @@ class SearchRemoteMediator @Inject constructor(
                                 pageNumber,
                                 Constants.DEFAULT_PAGE_SIZE,
                                 input,
-                                networkResponse.count
+                                networkData.count
                             )
                         )
-
+                    println("about to save in DBt")
                     databaseService.imageDao().save(imageDataList)
+                    println("DBData"+databaseService.imageDao().selectData(input))
                 }
             }
 
-            return MediatorResult.Success(endOfPaginationReached = isEndOfList)
+            return MediatorResult.Success(endOfPaginationReached = isListEmpty)
 
         } catch (exception: IOException) {
             MediatorResult.Error(exception)

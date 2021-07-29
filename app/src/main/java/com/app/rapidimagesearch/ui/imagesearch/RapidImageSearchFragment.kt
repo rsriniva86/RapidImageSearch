@@ -12,6 +12,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
+import androidx.paging.flatMap
+import androidx.paging.map
 import com.app.rapidimagesearch.MainActivityDelegate
 import com.app.rapidimagesearch.R
 import com.app.rapidimagesearch.network.ImageData
@@ -114,7 +116,10 @@ class RapidImageSearchFragment : Fragment(), RapidImageSearchAdapter.OnSearchIma
         lifecycleScope.launch {
             viewModel.getData(input)
                 .collectLatest { pagingData ->
+                    println("input"+input)
+                    println("pagingData"+pagingData.map{it.url})
                     imageAdapter.submitData(pagingData)
+                    println(imageAdapter.itemCount)
                 }
         }
 

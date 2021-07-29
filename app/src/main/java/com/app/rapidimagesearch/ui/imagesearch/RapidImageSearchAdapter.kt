@@ -16,7 +16,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import kotlinx.android.synthetic.main.item_image.view.*
 
-class RapidImageSearchAdapter() :
+class RapidImageSearchAdapter :
 PagingDataAdapter<ImageData, RapidImageSearchAdapter.ImageDataViewHolder>(DiffUtilCallBack()) {
     private var onSearchImageSearchImageItemClickListener: OnSearchImageItemClickListener? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageDataViewHolder {

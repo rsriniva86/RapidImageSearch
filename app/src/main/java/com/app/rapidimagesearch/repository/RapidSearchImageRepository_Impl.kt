@@ -28,7 +28,7 @@ constructor(
             remoteMediator = SearchRemoteMediator(
                 networkService = networkService,
                 databaseService = databaseService,
-                input = input,
+                input = input
             ),
             pagingSourceFactory = {
                 databaseService.imageDao().select(input)

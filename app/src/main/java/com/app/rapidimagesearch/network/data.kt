@@ -56,8 +56,8 @@ data class ImageData(
     @ColumnInfo(name = "webpage_url")
     @SerializedName("webpageUrl")
     val webPageUrl: String? = null,
-    @ColumnInfo(name = "query")
-    val query: String? = null
+    @ColumnInfo(name = "input")
+    var input: String? = null
 ):Serializable
 
 data class Provider(

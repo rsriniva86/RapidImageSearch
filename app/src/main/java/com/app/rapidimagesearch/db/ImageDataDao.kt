@@ -13,11 +13,14 @@ interface ImageDataDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun save(imageDataList: List<ImageData>)
 
-    @Query("SELECT * FROM image_data WHERE `query` LIKE :input")
+    @Query("SELECT * FROM image_data WHERE `input` LIKE :input")
     fun select(input: String?): PagingSource<Int, ImageData>
 
-    @Query("DELETE FROM image_data WHERE `query` = :q")
-    suspend fun delete(q: String)
+    @Query("DELETE FROM image_data WHERE `input` = :input")
+    suspend fun delete(input: String)
+
+    @Query("SELECT * FROM image_data WHERE `input` LIKE :input")
+    fun selectData(input: String?): List<ImageData>
 
 
 }
