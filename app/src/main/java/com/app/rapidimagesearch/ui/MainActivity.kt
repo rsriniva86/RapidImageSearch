@@ -1,4 +1,4 @@
-package com.app.rapidimagesearch
+package com.app.rapidimagesearch.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -7,13 +7,14 @@ import androidx.core.view.GravityCompat
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.app.rapidimagesearch.R
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.view.*
 
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), MainActivityDelegate {
+class MainActivity : AppCompatActivity(), NavigationHandler {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.theme_rapidimagesearch)
@@ -58,7 +59,7 @@ class MainActivity : AppCompatActivity(), MainActivityDelegate {
     }
 }
 
-interface MainActivityDelegate {
+interface NavigationHandler {
     fun setupNavDrawer(toolbar: androidx.appcompat.widget.Toolbar)
 
     fun enableNavDrawer(enable: Boolean)

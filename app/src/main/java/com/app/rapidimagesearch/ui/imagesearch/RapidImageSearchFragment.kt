@@ -12,10 +12,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
-import androidx.paging.map
-import com.app.rapidimagesearch.MainActivityDelegate
 import com.app.rapidimagesearch.R
 import com.app.rapidimagesearch.network.ImageData
+import com.app.rapidimagesearch.ui.NavigationHandler
 import com.app.rapidimagesearch.ui.image.ImageViewModel
 import com.app.rapidimagesearch.ui.web.WebPageViewModel
 import com.app.rapidimagesearch.utilities.initToolbar
@@ -29,13 +28,13 @@ class RapidImageSearchFragment : Fragment(),
     RapidImageSearchAdapter.OnSearchImageItemClickListener {
 
     private val viewModel: RapidImageSearchViewModel by viewModels()
-    private lateinit var mainActivityDelegate: MainActivityDelegate
+    private lateinit var navigationHandler: NavigationHandler
     private val imageAdapter = RapidImageSearchAdapter()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         try {
-            mainActivityDelegate = context as MainActivityDelegate
+            navigationHandler = context as NavigationHandler
         } catch (e: ClassCastException) {
             throw ClassCastException()
         }
@@ -52,8 +51,8 @@ class RapidImageSearchFragment : Fragment(),
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         initToolbar(toolbar = toolbar, R.string.app_name, false)
-        mainActivityDelegate.setupNavDrawer(toolbar)
-        mainActivityDelegate.enableNavDrawer(true)
+        navigationHandler.setupNavDrawer(toolbar)
+        navigationHandler.enableNavDrawer(true)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -116,10 +115,7 @@ class RapidImageSearchFragment : Fragment(),
         lifecycleScope.launch {
             viewModel.getData(input)
                 .collectLatest { pagingData ->
-                    println("input" + input)
-                    println("pagingData" + pagingData.map { it.url })
                     imageAdapter.submitData(pagingData)
-                    println(imageAdapter.itemCount)
                 }
         }
 
