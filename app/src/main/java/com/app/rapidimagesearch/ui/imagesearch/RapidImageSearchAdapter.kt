@@ -17,7 +17,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import kotlinx.android.synthetic.main.item_image.view.*
 
 class RapidImageSearchAdapter :
-PagingDataAdapter<ImageData, RapidImageSearchAdapter.ImageDataViewHolder>(DiffUtilCallBack()) {
+        PagingDataAdapter<ImageData, RapidImageSearchAdapter.ImageDataViewHolder>(DiffUtilCallBack()) {
     private var onSearchImageSearchImageItemClickListener: OnSearchImageItemClickListener? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageDataViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_image, parent, false)
@@ -62,6 +62,7 @@ PagingDataAdapter<ImageData, RapidImageSearchAdapter.ImageDataViewHolder>(DiffUt
         fun onItemClick(imageData: ImageData)
         fun onUrlClick(imageData: ImageData)
     }
+
     class DiffUtilCallBack : DiffUtil.ItemCallback<ImageData>() {
         override fun areItemsTheSame(oldItem: ImageData, newItem: ImageData): Boolean {
             return oldItem.url == newItem.url

@@ -12,7 +12,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
-import androidx.paging.flatMap
 import androidx.paging.map
 import com.app.rapidimagesearch.MainActivityDelegate
 import com.app.rapidimagesearch.R
@@ -26,7 +25,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class RapidImageSearchFragment : Fragment(), RapidImageSearchAdapter.OnSearchImageItemClickListener {
+class RapidImageSearchFragment : Fragment(),
+    RapidImageSearchAdapter.OnSearchImageItemClickListener {
 
     private val viewModel: RapidImageSearchViewModel by viewModels()
     private lateinit var mainActivityDelegate: MainActivityDelegate
@@ -116,8 +116,8 @@ class RapidImageSearchFragment : Fragment(), RapidImageSearchAdapter.OnSearchIma
         lifecycleScope.launch {
             viewModel.getData(input)
                 .collectLatest { pagingData ->
-                    println("input"+input)
-                    println("pagingData"+pagingData.map{it.url})
+                    println("input" + input)
+                    println("pagingData" + pagingData.map { it.url })
                     imageAdapter.submitData(pagingData)
                     println(imageAdapter.itemCount)
                 }
@@ -125,9 +125,9 @@ class RapidImageSearchFragment : Fragment(), RapidImageSearchAdapter.OnSearchIma
 
         lifecycleScope.launch {
             imageAdapter.loadStateFlow.collectLatest { loadStates ->
-                if(loadStates.refresh is LoadState.Loading){
+                if (loadStates.refresh is LoadState.Loading) {
                     progressBar?.visibility = View.VISIBLE
-                }else{
+                } else {
                     progressBar?.visibility = View.GONE
                 }
             }

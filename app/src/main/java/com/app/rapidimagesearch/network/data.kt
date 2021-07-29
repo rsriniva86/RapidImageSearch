@@ -58,7 +58,7 @@ data class ImageData(
     val webPageUrl: String? = null,
     @ColumnInfo(name = "input")
     var input: String? = null
-):Serializable
+) : Serializable
 
 data class Provider(
     @ColumnInfo(name = "name")

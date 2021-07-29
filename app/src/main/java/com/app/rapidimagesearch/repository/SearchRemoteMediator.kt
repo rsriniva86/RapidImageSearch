@@ -36,7 +36,8 @@ class SearchRemoteMediator @Inject constructor(
                     getCurrentKey(input)
                 }
             }
-            val pageNumber = loadKey?.pageNumber?.plus(1) ?: 1 //page number is 1 0r latest page//page number is 1 0r latest page
+            val pageNumber = loadKey?.pageNumber?.plus(1)
+                ?: 1 //page number is 1 0r latest page//page number is 1 0r latest page
 
             val networkData = networkService.search(
                 Constants.API_KEY_VALUE,
@@ -48,7 +49,7 @@ class SearchRemoteMediator @Inject constructor(
             )
             val isListEmpty: Boolean = networkData.imageList.isEmpty()
             val imageDataList = networkData.imageList.map { imageData: ImageData ->
-                imageData.input =input
+                imageData.input = input
                 imageData
             }
             println("imageDataList$imageDataList")
@@ -76,7 +77,7 @@ class SearchRemoteMediator @Inject constructor(
                         )
                     println("about to save in DBt")
                     databaseService.imageDao().save(imageDataList)
-                    println("DBData"+databaseService.imageDao().selectData(input))
+                    println("DBData" + databaseService.imageDao().selectData(input))
                 }
             }
 

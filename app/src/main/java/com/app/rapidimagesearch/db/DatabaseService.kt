@@ -15,5 +15,5 @@ import javax.inject.Singleton
 @TypeConverters(DataConverter::class)
 abstract class DatabaseService : RoomDatabase() {
     abstract fun imageDao(): ImageDataDao
-    abstract fun imageIndexDao():ImageDataIndexDao
+    abstract fun imageIndexDao(): ImageDataIndexDao
 }

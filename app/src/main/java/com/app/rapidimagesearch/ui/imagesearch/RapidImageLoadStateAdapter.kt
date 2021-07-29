@@ -11,7 +11,7 @@ import com.app.rapidimagesearch.R
 import kotlinx.android.synthetic.main.item_motionlayout.view.*
 
 class RapidImageLoadStateAdapter(private val retry: () -> Unit) :
-LoadStateAdapter<RapidImageLoadStateAdapter.LoaderViewHolder>() {
+    LoadStateAdapter<RapidImageLoadStateAdapter.LoaderViewHolder>() {
 
     override fun onBindViewHolder(holder: LoaderViewHolder, loadState: LoadState) {
         holder.bind(loadState)

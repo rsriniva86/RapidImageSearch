@@ -27,7 +27,7 @@ class ImageViewModel : ViewModel() {
         val image: ImageData? = arguments.get(IMAGE_ARG) as ImageData?
         image?.let {
             imageLiveData.value = it
-            Log.e("Image",imageLiveData.value.toString())
+            Log.e("Image", imageLiveData.value.toString())
         }
     }
 
