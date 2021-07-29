@@ -27,7 +27,7 @@ PagingDataAdapter<ImageData, RapidImageSearchAdapter.ImageDataViewHolder>(DiffUt
     override fun onBindViewHolder(holder: ImageDataViewHolder, position: Int) {
         getItem(position)?.let { holder.bindImageData(it) }
         val item = getItem(position)
-        holder.itemView.ivCover.setOnClickListener {
+        holder.itemView.ivImage.setOnClickListener {
             item?.let { it1 -> onSearchImageSearchImageItemClickListener?.onItemClick(it1) }
         }
         holder.itemView.tvWebPageUrl.setOnClickListener {
@@ -42,8 +42,8 @@ PagingDataAdapter<ImageData, RapidImageSearchAdapter.ImageDataViewHolder>(DiffUt
     }
 
     class ImageDataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val ivImageCover: ImageView = itemView.ivCover
-        private val tvTitle: TextView = itemView.tvTitle
+        private val ivImageCover: ImageView = itemView.ivImage
+        private val tvData: TextView = itemView.tvData
         private val tvWebPageUrl: TextView = itemView.tvWebPageUrl
 
         fun bindImageData(imageData: ImageData) {
@@ -51,7 +51,7 @@ PagingDataAdapter<ImageData, RapidImageSearchAdapter.ImageDataViewHolder>(DiffUt
                 Glide.with(itemView.context).load(thumbnail)
                         .transform(CenterCrop(), RoundedCorners(25))
                         .into(ivImageCover)
-                tvTitle.text = title
+                tvData.text = "${title}|${name}"
                 tvWebPageUrl.text = webPageUrl
                 tvWebPageUrl.paintFlags = Paint.UNDERLINE_TEXT_FLAG
             }
