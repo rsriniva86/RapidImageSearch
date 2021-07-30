@@ -25,7 +25,7 @@ import org.junit.runner.RunWith
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(AndroidJUnit4::class)
 @SmallTest
-class SearchImageRemoteMediatorTest {
+class SearchRemoteMediatorTest {
 
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
