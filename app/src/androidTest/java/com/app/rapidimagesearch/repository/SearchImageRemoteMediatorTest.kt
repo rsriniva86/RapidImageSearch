@@ -27,14 +27,10 @@ import org.junit.runner.RunWith
 @SmallTest
 class SearchImageRemoteMediatorTest {
 
-
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
-
-
-    lateinit var database: DatabaseService
-    lateinit var networkService: RapidImageSearchService
-
+    private lateinit var database: DatabaseService
+    private lateinit var networkService: RapidImageSearchService
 
     @Before
     fun setup() {

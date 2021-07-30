@@ -24,13 +24,13 @@ object GenerateMockObjects {
             return emptyList()
         }
         val list: MutableList<ImageData> = mutableListOf()
-        for (index in 0..numberOfObjects) {
-            list.add(generateImageData(index))
+        for (index in 1..numberOfObjects) {
+            list.add(generateImageData(index,input))
         }
         return list
     }
 
-    private fun generateImageData(objectID: Int): ImageData =
+    private fun generateImageData(objectID: Int,input: String): ImageData =
             ImageData(
                     url = "http://url${objectID}",
                     height = 200,
@@ -43,7 +43,8 @@ object GenerateMockObjects {
                     title = "ImageDataTitle$objectID",
                     imageWebSearchUrl = "",
                     webPageUrl = "",
-                    provider = generateProvider()
+                    provider = generateProvider(),
+                    input = input
             )
 
 
