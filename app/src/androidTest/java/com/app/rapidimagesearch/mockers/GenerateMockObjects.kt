@@ -3,6 +3,8 @@ package com.app.rapidimagesearch.mockers
 import android.content.Context
 import androidx.room.Room
 import com.app.rapidimagesearch.db.DatabaseService
+import com.app.rapidimagesearch.db.ImageDataIndex
+import com.app.rapidimagesearch.network.Constants
 import com.app.rapidimagesearch.network.ImageData
 import com.app.rapidimagesearch.network.Provider
 import com.app.rapidimagesearch.network.RapidImageSearchResponse
@@ -18,6 +20,15 @@ object GenerateMockObjects {
                         input = input)
 
             )
+
+    fun generateImageDataIndex(input: String)=
+        ImageDataIndex(
+            0,
+            1,
+            Constants.DEFAULT_PAGE_SIZE,
+            input,
+            100
+        )
 
     fun generateImageDataList(numberOfObjects: Int,input: String): List<ImageData> {
         if(input==null || input == "NO_DATA"){
